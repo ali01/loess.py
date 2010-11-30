@@ -1,0 +1,20 @@
+0  storm id
+1  storm name
+2  month day time
+3  year
+4  latitude
+5  longitude
+6  maximum wind speed
+7  minimum central pressure
+8  radius of maximum wind speed
+9  pressure of the outer closed isobar
+10 radius of the outer closed isobar
+
+
+considering:
+- latitude
+- maximum wind speed
+- minimum central pressure
+- radius of maximum wind speed
+- pressure of the outer closed isobar
+- radius of the outer closed isobar

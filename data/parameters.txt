@@ -1,0 +1,11 @@
+id
+name
+month day time
+year
+lat
+lon
+wind speed
+central pressure
+radius of maximum wind speed
+pressure of the outer closed isobar
+radius of the outer closed isobar

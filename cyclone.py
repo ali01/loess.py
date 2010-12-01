@@ -1,9 +1,5 @@
 #!/usr/bin/python
 
-def load_data():
-  
-
-
 def main():
   load_data()
 

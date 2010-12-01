@@ -2,9 +2,6 @@ import numpy as np
 import math
 from bisect import insort_left
 
-# TODO: remove
-from pdb import set_trace
-
 def loess_query(x_query, X, y, alpha):
   if not isinstance(x_query, np.ndarray):
     x_query = np.array(x_query)

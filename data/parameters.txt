@@ -11,10 +11,11 @@
 10 radius of the outer closed isobar
 
 
-considering:
-- latitude
-- maximum wind speed
-- minimum central pressure
-- radius of maximum wind speed
-- pressure of the outer closed isobar
-- radius of the outer closed isobar
+Forecast Model:
+[0] latitude
+[1] longitude 
+[2] maximum wind speed
+[3] minimum central pressure
+[4] radius of maximum wind speed
+[5] pressure of outer closed isobar
+[6] radius of outer closed isobar

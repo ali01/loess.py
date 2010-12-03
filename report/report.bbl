@@ -1,0 +1,15 @@
+\begin{thebibliography}{1}
+
+\bibitem{Chaum1981}
+{\sc Chaum, D.~L.}
+\newblock {Untraceable electronic mail, return addresses, and digital
+  pseudonyms}.
+\newblock {\em Communications of the {ACM} 24}, 2 (1981), 84--90.
+
+\bibitem{Diffie1976}
+{\sc Diffie, W., and Hellman, M.~E.}
+\newblock {New Directions in Cryptography}.
+\newblock {\em IEEE Transactions on Information Theory IT-22}, 6 (Nov. 1976),
+  644--654.
+
+\end{thebibliography}

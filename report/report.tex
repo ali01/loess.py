@@ -50,8 +50,18 @@
 
 
 \subsection*{Abstract}
-Your Abstract Text Goes Here.  Just a few facts.
-Whet our appetites.
+Critical sensor data about the state of an active tropical cyclone is often
+incomplete or inconsistent. We present a forecast model that attempts to capture
+a fundamental understanding of the relationships between a storm's different
+numerical attributes. The model can thereby help verify or reconstruct corrupted
+data about any given tropical cyclone. The forecast model we present is based on
+a supervised machine learning algorithm known as LOESS which implements robust
+locally weighted regression in $n$-dimensional space, where $n$ is the number
+of attributes of the storm under consideration. The model presented yields good
+results with error margins of less than 10\% for attributes that exhibit a high
+degree of correlation with other attributes in the model.
+
+
 
 \section{Introduction}
 
@@ -73,14 +83,15 @@ maximum wind speed, radius of outer closed isobar, pressure of outer closed
 isobar, among others. Moreover, previous studies have indicated that said
 attributes not only represent a reasonably complete snapshot of a tropical
 cyclone's behavior but also that they are highly correlated with each
-other.~\cite{SHIPS}
+other~\cite{SHIPS}.
 
-In this paper, we analyze data for approximately 10,000 hurricanes in the
-Atlantic and Eastern North Pacific Basins and observe a number of statistically
-significant correlations between seven attributes pertaining to tropical
-cyclones.
+In this paper, we analyze data for approximately over 1,000 hurricanes in the
+Atlantic and Eastern North Pacific Basins. For each hurricane in the dataset, we
+considered between 10 and 30 six-hourly snapshots of the storms attributes. We
+point out a number of statistically significant correlations between seven
+attributes that generally pertain to tropical cyclones~\cite{SHIPS}.
 
-Further, we formalize the aforementioned observations and present a forecast
+Further, we formalize our observations and present a forecast
 model, based on locally weighted linear regression, that allows meteorologists
 to use historical storm data to extrapolate the value of a single corrupted data
 attribute in the data model of a storm, given correct values for a sufficient
@@ -115,8 +126,8 @@ critical for the effectiveness of a tropical cyclone warning system.
 As a preliminary step to crafting a unified forecast model, we present a number
 of statistically significant pairwise correlations that were observed from
 plots of data from \emph{The Tropical Cyclone Extended Best Track
-Dataset}.~\cite{BestTrackDataset} The following attributes of approximately 
-10,000 tropical cyclones were observed:
+Dataset}~\cite{BestTrackDataset}. The following attributes of approximately 
+1,000 tropical cyclones were observed:
 \begin{itemize}
   \item latitude
   \item longitude
@@ -144,8 +155,8 @@ a strong negative correlation between the two attributes.
 \end{figure}
 
 Because the magnitude of the pressure gradient in the atmosphere is the primary
-driver of wind speeds, it is not unexpected that a storm with a lower
-pressure center would produce higher wind speeds.
+driver of wind speeds~\cite{MeteorologyToday}, it is not unexpected that a storm
+with a lower pressure center would produce higher wind speeds.
 
 
 \subsection{Pressure vs. Max. Wind Speed Radius}
@@ -163,10 +174,68 @@ attributes.
 
 Note that, because of the relationship between pressure and wind speed described
 in the previous section, a higher central pressure is correlated with slower
-wind speeds. Because of the law of Conservation of Angular Momentum, slower
-wind speeds are in-turn correlated with larger wind speed radii. Consequently,
-a tropical cyclone's minimum central pressure is positively correlated with 
-the radius of the storm's maximum wind speeds.
+wind speeds. Because of the law of Conservation of Angular Momentum, slower wind
+speeds are in-turn correlated with larger wind speed radii. Consequently, a
+tropical cyclone's minimum central pressure is positively correlated with the
+radius of the storm's maximum wind speeds.
+
+
+\subsection{Maximum Wind Speed vs.\\Maximum Wind Speed Radius}
+\begin{figure}[h!]
+  \centering
+  \includegraphics[scale=0.31]{speed_vs_radius.png}
+  \caption{Max. Wind Speed vs. Wind Speed Radius}
+  \label{speed_vs_radius}
+\end{figure}
+A direct corollary of the relationship described in the previous section, is the
+negative correlation between maximum wind speed and maximum wind speed radius.
+The relationship is illustrated by Figure \ref{speed_vs_radius}. Note that as
+maximum wind speeds increase, the maximum wind speed radius tends to decrease.
+
+\subsection{Longitude vs. Wind Speed}
+Finally, Figure \ref{longitude_vs_speed} reveals that as hurricanes in the
+Atlantic basin move westward, their maximum wind speeds tend to increase.
+However, once storms reach a certain longitude (i.e. approximately $90^\circ$
+West), wind speeds dramatically drop. This can be attributed to probable
+landfall.
+\begin{figure}[h!]
+  \centering
+  \includegraphics[scale=0.31]{longitude_vs_speed.png}
+  \caption{Longitude vs. Max. Wind Speeds}
+  \label{longitude_vs_speed}
+\end{figure}
+
+As a tropical cyclone travels over land, its primary source of energy, warm
+evaporating water, is no longer available. Consequently, the storm weakens and
+eventually dissipates. Note that the cluster of data points with wind speeds of
+around $120$ knots at longitudes of around $100^\circ$ occurred over the Gulf of
+Mexico.
+
+\section{Crafting a Numerical Weather Model}
+
+We present a numerical model that captures the many-to-many relationships
+between the different attributes that can be used to describe a tropical
+cyclone's behavior. The model is based on a supervised machine learning
+algorithm known as LOESS~\cite{LOESS}. The algorithm implements robust locally
+weighted regression in $n$-dimensional space, where $n$ is the number of
+attributes taken into account by the model. In contrast to the manual, pair-wise
+analysis used to identify a few trends in the data in the previous section, the
+numerical model succeeds at capturing the relationship between each attribute
+and every other attribute in the model.
+
+\subsection{Training the Learning Algorithm}
+Predictions made by the numerical model about any particular tropical cyclone
+are based on a database containing historical data of similar tropical cyclones
+that have occurred in the past. For this reason, LOESS is a supervised learning
+algorithm, as it requires training data whose correctness is, in a sense,
+\emph{supervised}.
+
+The training data used with our implementation of the algorithm comes from 
+the same dataset that we used in the previous section~\cite{BestTrackDataset}.
+
+\subsection{Estimating the Model's Parameters}
+
+
 
 
 \bibliographystyle{acm}

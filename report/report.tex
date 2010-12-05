@@ -80,13 +80,12 @@ storm systems.
 \subsection{Patterns in Hurricane Data Models}
 At any given moment, any one tropical cyclone and its present behavior can be
 almost entirely described with values for a relatively small set of attributes.
-One important subset of those attributes could include: minimum central
-pressure, maximum wind speeds, latitude, longitude, radius of eyewall, radius of
-maximum wind speed, radius of outer closed isobar, pressure of outer closed
-isobar, among others. Moreover, previous studies have indicated that said
-attributes not only represent a reasonably complete snapshot of a tropical
-cyclone's behavior but also that they are highly correlated with each
-other~\cite{SHIPS}.
+Moreover, previous studies have indicated that said attributes not only
+represent a reasonably complete snapshot of a tropical cyclone's behavior but
+also that they are highly correlated with each other~\cite{SHIPS}. One important
+subset of those attributes could include: minimum central pressure, maximum wind
+speeds, latitude, longitude, radius of eyewall, radius of maximum wind speed,
+radius of outer closed isobar, pressure of outer closed isobar, among others.
 
 In this paper, we analyze data for approximately over 1,000 hurricanes in the
 Atlantic and Eastern North Pacific Basins. For each hurricane in the dataset, we
@@ -105,7 +104,7 @@ Often times, at the most critical moment of a storm's development, sensor data
 about its state can be incomplete or fraught with inconsistencies. In situations
 like that, a forecast model that is based on a fundamental understanding of the
 relationships between a storm's different attributes can help verify or 
-reconstruct a dataset of an ongoing storm.
+reconstruct the dataset of an ongoing storm.
 
 Additionally, a forecast model that sheds light on the interactions between
 the different attributes in a storm's data model, enables meteorologists to
@@ -113,7 +112,7 @@ better predict the side-effects of changes to any one of those attributes.
 Consequently, a successful forecast model for tropical cyclones may not only
 improve the accuracy of warnings issued, but also their qualitative preciseness.
 
-For instance, although it's fairly well understood that a increase in minimum
+For instance, although it's fairly well understood that an increase in minimum
 central pressure will result in a decrease of maximum wind speeds, it is also
 important to consider a more subtle effect: A decrease in minimum central
 pressure will indeed result in lower wind speeds, but because of the law of
@@ -129,8 +128,8 @@ critical for the effectiveness of a tropical cyclone warning system.
 As a preliminary step to crafting a unified forecast model, we present a number
 of statistically significant pairwise correlations that were observed from
 plots of data from \emph{The Tropical Cyclone Extended Best Track
-Dataset}~\cite{BestTrackDataset}. The following attributes of approximately 
-1,000 tropical cyclones were observed:
+Dataset}~\cite{BestTrackDataset}. The following attributes were tracked every
+six hours throughout the lifetime of approximately 1,000 tropical cyclones:
 \begin{itemize}
   \item latitude
   \item longitude
@@ -190,17 +189,18 @@ radius of the storm's maximum wind speeds.
   \caption{Max. Wind Speed vs. Wind Speed Radius}
   \label{speed_vs_radius}
 \end{figure}
-A direct corollary of the relationship described in the previous section, is the
-negative correlation between maximum wind speed and maximum wind speed radius.
-The relationship is illustrated by Figure \ref{speed_vs_radius}. Note that as
-maximum wind speeds increase, the maximum wind speed radius tends to decrease.
+A direct corollary of the relationship described in the previous subsection, is
+that a storm's maximum wind speed is negatively correlated with its maximum wind
+speed radius. The relationship is illustrated by Figure \ref{speed_vs_radius}.
+Note that as maximum wind speeds increase, the maximum wind speed radius tends
+to decrease.
 
 \subsection{Longitude vs. Wind Speed}
 Finally, Figure \ref{longitude_vs_speed} reveals that as hurricanes in the
 Atlantic basin move westward, their maximum wind speeds tend to increase.
 However, once storms reach a certain longitude (i.e. approximately $90^\circ$
 West), wind speeds dramatically drop. This can be attributed to probable
-landfall.
+landfall against the Atlantic coast of the North American continent.
 \begin{figure}[h!]
   \centering
   \includegraphics[scale=0.31]{longitude_vs_speed.png}
@@ -217,35 +217,46 @@ Mexico.
 \section{Crafting a Numerical Weather Model}
 
 We present a numerical model that captures the many-to-many relationships
-between the different attributes that can be used to describe a tropical
-cyclone's behavior. The model is based on a supervised machine learning
-algorithm known as LOESS~\cite{LOESS}. The algorithm implements robust locally
-weighted regression in $n$-dimensional space, where $n$ is the number of
-attributes taken into account by the model. In contrast to the manual, pair-wise
-analysis used to identify a few trends in the data in the previous section, the
-numerical model succeeds at capturing the relationship between each attribute
-and every other attribute in the model.
+between the different numerical attributes of a tropical cyclone's behavior. The
+model is based on a supervised machine learning algorithm known as
+LOESS~\cite{LOESS}. The algorithm implements robust locally weighted regression
+in $n$-dimensional space, where $n$ is the number of attributes taken into
+account by the model. In contrast to the manual, pair-wise analysis used to
+identify a few trends in the previous section, the numerical model succeeds at
+capturing the relationship between each attribute and every other attribute in
+the model.
 
-\subsection{Training the Learning Algorithm}
+\subsection{Training Data}
 Predictions made by the numerical model about any particular tropical cyclone
 are based on a database containing historical data of similar tropical cyclones
 that have occurred in the past. For this reason, LOESS is a supervised learning
 algorithm, as it requires training data whose correctness is, in a sense,
-\emph{supervised}.
-
-The training data used with our implementation of the algorithm comes from 
-the same dataset that we used in the previous section~\cite{BestTrackDataset}.
+\emph{supervised}. The training data used with our implementation of the
+algorithm comes from the same dataset that we used in the previous
+section~\cite{BestTrackDataset}.
 
 \subsection{Defining a Hypothesis Function}
 The preliminary analyses of storm data presented in the previous section
 suggest that most interactions between attributes in tropical cyclones can be
 approximated with a linear function. As a result, the hypothesis function for
 the forecast model that we present is of the form:
-\begin{align*}
+\begin{align}
   h_{\theta}(x) = \theta_0 + \theta_1 x_1 + \theta_2 x_2 + \cdots + \theta_n x_n
-\end{align*}
-In the expression above, $x_1, \cdots, x_n$ are the numerical 
+\end{align}
+In the expression above, $x_1, \cdots, x_n$ are referred to as the model's
+features where $x_i$ is equal to the value of the \mbox{$i$-th} known attribute
+of storm $S$. The linear model's parameters are given by
+$\theta_0,\cdots,\theta_n$ where $\theta_0$ specifies the intercept term and
+$\theta_1$ through $\theta_n$ specify the linear function's coefficients. The
+value of $h_\theta(x)$ is the model's prediction for the value of $y$, a single
+attribute of storm $S$ whose value is not known (e.g. was corrupted).
 
+If we let $x_0$ be equal to one, our hypothesis can be written in matrix vector
+form as follows:
+\begin{align}
+  h_\theta(x) = \theta^T x
+\end{align}
+where both $\theta$ and $x$ are 
 ~\cite{LinearRegression}
 
 \subsection{Estimating the Model's Parameters}

@@ -103,7 +103,7 @@ For instance, although it's fairly well understood that a increase in minimum
 central pressure will result in a decrease of maximum wind speeds, it is also
 important to consider a more subtle effect: A decrease in minimum central
 pressure will indeed result in lower wind speeds, but because of the law of
-conservation of angular momentum, the radius around which maximum wind speeds
+Conservation of Angular Momentum, the radius around which maximum wind speeds
 revolve will also increase. Therefore, the resulting storm surge and size of the
 area of devastation will be different than with lower pressure and higher wind
 speeds. Understanding exactly how such factors are likely to be different is
@@ -113,7 +113,7 @@ critical for the effectiveness of a tropical cyclone warning system.
 \section{Patterns Observed}
 
 As a preliminary step to crafting a unified forecast model, we present a number
-of statistically significant pair-wise correlations that were observed from
+of statistically significant pairwise correlations that were observed from
 plots of data from \emph{The Tropical Cyclone Extended Best Track
 Dataset}.~\cite{BestTrackDataset} The following attributes of approximately 
 10,000 tropical cyclones were observed:
@@ -126,6 +126,47 @@ Dataset}.~\cite{BestTrackDataset} The following attributes of approximately
   \item pressure of outer closed isobar
   \item radius of outer closed isobar
 \end{itemize}
+In the following sub-sections, we present a summary of the four most important
+pairwise correlations observed.
+
+
+\subsection{Pressure vs. Wind Speeds}
+
+The most clearly expressed pairwise relationship in the data was that between
+tropical cyclones' minimum central pressure and it's corresponding maximum wind
+speeds. As illustrated by Figure \ref{pressure_vs_speed}, there is
+a strong negative correlation between the two attributes.
+\begin{figure}[h!]
+  \centering
+  \includegraphics[scale=0.31]{pressure_vs_speed.png}
+  \caption{Pressure vs. Wind Speeds}
+  \label{pressure_vs_speed}
+\end{figure}
+
+Because the magnitude of the pressure gradient in the atmosphere is the primary
+driver of wind speeds, it is not unexpected that a storm with a lower
+pressure center would produce higher wind speeds.
+
+
+\subsection{Pressure vs. Max. Wind Speed Radius}
+A more subtle pairwise interaction (that was alluded to before) is that between
+tropical cyclones' minimum central pressure and the radius around which the 
+cyclone's maximum wind speeds revolve. Figure \ref{pressure_vs_radius}
+illustrates a statistically significant positive correlation between the two
+attributes.
+\begin{figure}[h!]
+  \centering
+  \includegraphics[scale=0.27]{pressure_vs_radius.png}
+  \caption{Pressure vs. Max. Wind Speed Radius}
+  \label{pressure_vs_radius}
+\end{figure}
+
+Note that, because of the relationship between pressure and wind speed described
+in the previous section, a higher central pressure is correlated with slower
+wind speeds. Because of the law of Conservation of Angular Momentum, slower
+wind speeds are in-turn correlated with larger wind speed radii. Consequently,
+a tropical cyclone's minimum central pressure is positively correlated with 
+the radius of the storm's maximum wind speeds.
 
 
 \bibliographystyle{acm}

@@ -21,7 +21,10 @@
 
 % This version uses the latex2e styles, not the very ancient 2.09 stuff.
 \documentclass[letterpaper,twocolumn,10pt]{article}
+\usepackage{listings}
 \usepackage{usenix,epsfig,endnotes}
+\usepackage{amssymb,enumerate,textcomp,graphicx,url}
+\usepackage{algorithmic,amsmath,amsthm,amssymb,amsfonts}
 \begin{document}
 
 %don't want date printed
@@ -233,8 +236,27 @@ algorithm, as it requires training data whose correctness is, in a sense,
 The training data used with our implementation of the algorithm comes from 
 the same dataset that we used in the previous section~\cite{BestTrackDataset}.
 
-\subsection{Estimating the Model's Parameters}
+\subsection{Defining a Hypothesis Function}
+The preliminary analyses of storm data presented in the previous section
+suggest that most interactions between attributes in tropical cyclones can be
+approximated with a linear function. As a result, the hypothesis function for
+the forecast model that we present is of the form:
+\begin{align*}
+  h_{\theta}(x) = \theta_0 + \theta_1 x_1 + \theta_2 x_2 + \cdots + \theta_n x_n
+\end{align*}
+In the expression above, $x_1, \cdots, x_n$ are the numerical 
 
+~\cite{LinearRegression}
+
+\subsection{Estimating the Model's Parameters}
+The algorithm minimizes the following cost function with respect to a parameter
+vector $\theta$:
+\begin{align}
+  J(\theta) &= \frac{1}{2}\sum_{i=1}^{m}{
+                w^{(i)}\left(\theta^T x^{(i)} - y^{(i)}\right)^2
+              }\\
+            &= \frac{1}{2}(X\theta - \vec{y})^T W(X\theta - \vec{y})
+\end{align}
 
 
 

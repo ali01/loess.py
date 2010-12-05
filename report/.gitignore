@@ -8,3 +8,9 @@
 *.ent
 *.fls
 *.log
+*.watcher_pid
+*.temp
+.*.ent
+.*.fmt
+.*.ini
+.report.tex

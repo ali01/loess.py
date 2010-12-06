@@ -226,15 +226,6 @@ identify a few trends in the previous section, the numerical model succeeds at
 capturing the relationship between each attribute and every other attribute in
 the model.
 
-\subsection{Training Data}
-Predictions made by the numerical model about any particular tropical cyclone
-are based on a database containing historical data of similar tropical cyclones
-that have occurred in the past. For this reason, LOESS is a supervised learning
-algorithm, as it requires training data whose correctness is, in a sense,
-\emph{supervised}. The training data used with our implementation of the
-algorithm comes from the same dataset that we used in the previous
-section~\cite{BestTrackDataset}.
-
 \subsection{Defining a Hypothesis Function}
 The preliminary analyses of storm data presented in the previous section
 suggest that most interactions between attributes in tropical cyclones can be
@@ -243,32 +234,124 @@ the forecast model that we present is of the form:
 \begin{align}
   h_{\theta}(x) = \theta_0 + \theta_1 x_1 + \theta_2 x_2 + \cdots + \theta_n x_n
 \end{align}
-In the expression above, $x_1, \cdots, x_n$ are referred to as the model's
-features where $x_i$ is equal to the value of the \mbox{$i$-th} known attribute
+
+In the expression above, $x_1,\ldots,x_n$ are referred to as the model's
+features. Each $x_i$ is equal to the value of the \mbox{$i$-th} known attribute
 of storm $S$. The linear model's parameters are given by
-$\theta_0,\cdots,\theta_n$ where $\theta_0$ specifies the intercept term and
+$\theta_0,\ldots,\theta_n$ where $\theta_0$ specifies the intercept term and
 $\theta_1$ through $\theta_n$ specify the linear function's coefficients. The
 value of $h_\theta(x)$ is the model's prediction for the value of $y$, a single
 attribute of storm $S$ whose value is not known (e.g. was corrupted).
 
-If we let $x_0$ be equal to one, our hypothesis can be written in matrix vector
-form as follows:
+To simplify our notation, we introduce the convention of letting $x_0 = 1$ so
+that the hypothesis function can be written in matrix vector form:
 \begin{align}
-  h_\theta(x) = \theta^T x
+  h_\theta(x) = \sum_{i=0}^{n}{\theta_i x_i} = \theta^T x
 \end{align}
-where both $\theta$ and $x$ are 
-~\cite{LinearRegression}
+Above, $n$ is the number of features (not counting $x_0$). The subexpression
+on the right hand side views $\theta$ as a vector of the model's parameters,
+and $x$ as a vector of its features~\cite{LinearRegression}.
+
+
+\subsection{Training Data}
+Predictions made by the numerical model about any particular tropical cyclone
+are based on a database containing historical data of similar tropical cyclones
+that have occurred in the past. For this reason, LOESS is a supervised learning
+algorithm, as it requires training data whose correctness is, in a sense,
+\emph{supervised}.
+
+A training dataset is composed of a matrix $X$ and a vector $\vec{y}$. Each
+row in $X$ represents a single datapoint (namely, a single observation of a
+tropical cyclone) and each column denotes an attribute of the storm (e.g.
+minimum central pressure). The observed historical values for the attribute
+that we would like to predict are stored as elements of the vector $\vec{y}$.
+The elements of vector $\vec{y}$ are known collectively as the labels of the
+training set. Note that the \mbox{$i$-th} label in $\vec{y}$ corresponds to
+the data point stored in $i$-th row of the matrix $X$.
+
+As mentioned before, the training data used for
+our forecast model comes from \emph{The Tropical Cyclone Extended Best Track
+Dataset}~\cite{BestTrackDataset}.
+
 
 \subsection{Estimating the Model's Parameters}
+\subsubsection{Defining a Cost Function}
 The algorithm minimizes the following cost function with respect to a parameter
 vector $\theta$:
 \begin{align}
   J(\theta) &= \frac{1}{2}\sum_{i=1}^{m}{
                 w^{(i)}\left(\theta^T x^{(i)} - y^{(i)}\right)^2
-              }\\
-            &= \frac{1}{2}(X\theta - \vec{y})^T W(X\theta - \vec{y})
+              }
+\end{align}
+Equation $3$ is a variation of the familiar least-squares cost function that
+gives rise to the ordinary least squares regression
+model~\cite{LinearRegression}. In order to factor in possible non-linear
+relationships between attributes in a storm, we introduce a weighing factor,
+$w^{(i)}$, a multiplier to each term within the sum.
+
+For convenience, let $r$ be equal to $\lfloor \alpha\,n \rfloor$ where
+\mbox{$\alpha\in(0,1)$} is a tuning parameter given to the algorithm, and $n$
+is the number of data points observed. Note that, in our case, $n$ is equal to
+approximately 1,000. The value of $w^{(i)}$ then is given by the expression:
+\begin{align}
+  w^{(i)} = W\left(\frac{x - x_i}{h_i}\right)
+\end{align}
+where $h_i$ is a scaling factor that is equal to the \mbox{$r$-th} smallest
+number among $|x_i - x_j|$ for $j = 1,\ldots,n$. In equation 4, $W(x)$ is the 
+tri-cube weighting function, given by:
+\begin{align}
+  W(x) =
+  \begin{cases}
+    (1 - |x|^3)^3, & \text{for $|x| < 1$}\\
+    0, & \text{for $|x| \ge 1$}
+  \end{cases}
+\end{align}
+Note that the weights depend on the particular query point $x$ at which we
+are trying to evaluate our hypothesis. Moreover, if $|x^{(i)} - x$ is small,
+then $w^{(i)}$ is closer to $1$ than if $|x^{(i)} - x$ is large. Hence, the cost
+function given by equation 3 gives a higher weight to data points that are close
+to the query point $x$ than those that are far away~\cite{LinearRegression}.
+
+Finally, if we express cost function in equation 3 in matrix-vector notation we
+obtain the following expression for $J$:
+\begin{align}
+  J(\theta) = \frac{1}{2}(X\theta - \vec{y})^T W(X\theta - \vec{y})
 \end{align}
 
+\subsubsection{Minimizing the Cost Function}
+
+We minimize the cost function $J$ analytically by taking the derivative with
+respect to $\theta$ of equation 6 above, setting the result equal to zero, and
+solving for $\theta$.
+
+Thereby, our estimate of our forecast model's parameters $\theta$ is given by:
+\begin{align}
+  \theta = (X^T W X)^{-1} X^T W \vec{y}
+\end{align}
+The above expression optimally minimizes the cost function $J$, and therefore
+provides the best possible estimate for the parameters of our linear model.
+
+Once $\theta$ has been computed, it can be plugged back into our hypothesis
+function (equation 2) in order to perform a prediction for any new data point
+$x$ whose corresponding $y$ may be unknown.
+
+\section{Results}
+
+Testing was conducted by performing take-one-out cross validation on the
+original training dataset. On tests where $y$ was either minimum central
+pressure or maximum wind speed, the average percent error in the model's 
+predictions was $8.4\%$. Whenever $y$ was any one of the other, less correlated,
+attributes, the total average percent error in the model's predictions was 
+$24.7\%$.
+
+
+\section{Conclusion}
+The use of locally weighted linear regression as the foundation of a forecast
+model for tropical cyclones yields acceptable error margins on attribute
+predictions. The model presented can be used to reconstruct incomplete or 
+inconsistent data about the state of a tropical cyclone. Further, the forecast
+model sheds light on the interactions between the different attributes in
+a storm's data model.
 
 
 \bibliographystyle{acm}
